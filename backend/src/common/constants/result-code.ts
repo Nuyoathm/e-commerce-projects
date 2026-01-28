@@ -1,0 +1,15 @@
+export enum ResultCode {
+    SUCCESS = 200,
+    BAD_REQUEST = 400,
+    UNAUTHORIZED = 401,
+    FORBIDDEN = 403,
+    NOT_FOUND = 404,
+    INTERNAL_SERVER_ERROR = 500,
+
+    // Business codes
+    BUSINESS_ERROR = 1000,
+    PARAM_ERROR = 1001,
+    DATA_ALREADY_EXISTS = 1002,
+    DATA_NOT_FOUND = 1003,
+    STOCK_NOT_ENOUGH = 2001,
+}
