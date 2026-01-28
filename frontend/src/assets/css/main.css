@@ -1,0 +1,118 @@
+:root {
+  /* Premium Color Palette */
+  --primary-color: #6366f1;
+  --primary-gradient: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+  --success-color: #22c55e;
+  --warning-color: #f59e0b;
+  --danger-color: #ef4444;
+  --bg-color: #f8fafc;
+  --sidebar-bg: #ffffff;
+  --card-bg: rgba(255, 255, 255, 0.8);
+  --text-primary: #1e293b;
+  --text-regular: #475569;
+  --text-secondary: #94a3b8;
+  --border-color: #e2e8f0;
+  --card-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --glass-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --radius-xl: 16px;
+  --radius-lg: 12px;
+  --radius-md: 8px;
+}
+
+/* Global Transitions */
+* {
+  transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
+}
+
+body {
+  background-color: var(--bg-color);
+  color: var(--text-primary);
+  font-family: 'Outfit', sans-serif !important;
+  margin: 0;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Glassmorphism Effect */
+.glass-effect {
+  background: var(--card-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: var(--glass-shadow);
+}
+
+/* Element Plus Overrides */
+.el-card {
+  border-radius: var(--radius-xl) !important;
+  border: 1px solid var(--border-color) !important;
+  box-shadow: var(--card-shadow) !important;
+  background: var(--card-bg) !important;
+  backdrop-filter: blur(8px) !important;
+}
+
+.el-button--primary {
+  background: var(--primary-gradient) !important;
+  border: none !important;
+  padding: 10px 20px !important;
+  border-radius: var(--radius-md) !important;
+  font-weight: 500 !important;
+}
+
+.el-button--primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+}
+
+.el-table {
+  border-radius: var(--radius-lg) !important;
+  overflow: hidden !important;
+  box-shadow: var(--card-shadow) !important;
+}
+
+.el-table th {
+  background-color: #f1f5f9 !important;
+  color: var(--text-primary) !important;
+  font-weight: 600 !important;
+}
+
+.el-menu {
+  border-right: none !important;
+}
+
+.el-aside {
+  border-right: 1px solid var(--border-color) !important;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--text-secondary);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-regular);
+}
+
+/* Animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeInUp 0.6s ease-out forwards;
+}

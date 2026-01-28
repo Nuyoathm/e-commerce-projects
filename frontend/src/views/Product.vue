@@ -1,40 +1,79 @@
 <template>
-  <div class="product-container">
-    <el-card v-loading="productStore.loading">
-      <template #header>
-        <div class="card-header">
-          <span>商品管理</span>
-          <div class="header-btns">
-            <el-button type="warning" :icon="Download" @click="handleExport">导出数据</el-button>
-            <el-button type="success" :icon="Upload" @click="importDialogVisible = true">批量导入</el-button>
-            <el-button type="primary" :icon="Plus" @click="handleAdd">新增商品</el-button>
-          </div>
-        </div>
-      </template>
+  <div class="product-container animate-fade-in">
+    <div class="product-page-header">
+      <div class="header-title-box">
+        <h2 class="page-title">商品库管理</h2>
+        <p class="page-subtitle">管理、搜索并发布您的商城商品</p>
+      </div>
+      <div class="header-actions-group">
+        <el-button class="action-btn" :icon="Download" @click="handleExport">导出</el-button>
+        <el-button class="action-btn" :icon="Upload" @click="importDialogVisible = true">导入</el-button>
+        <el-button type="primary" class="add-btn" :icon="Plus" @click="handleAdd">新增商品</el-button>
+      </div>
+    </div>
 
-      <el-table :data="productStore.products" style="width: 100%">
-        <el-table-column prop="title" label="商品标题" min-width="200" />
-        <el-table-column prop="categoryId.name" label="所属分类" width="150" />
-        <el-table-column prop="status" label="状态" width="100">
-          <template #default="{ row }">
-            <el-tag :type="row.status === 1 ? 'success' : 'info'">
-              {{ row.status === 1 ? '上架' : '下架' }}
-            </el-tag>
-          </template>
-        </el-table-column>
-        <el-table-column label="操作" width="200" fixed="right">
-          <template #default="{ row }">
-            <el-button link type="primary" @click="handleEdit(row)">编辑</el-button>
-            <el-button link type="danger" @click="handleDelete(row)">删除</el-button>
-          </template>
-        </el-table-column>
-      </el-table>
+    <el-card class="product-list-card animate-fade-in" v-loading="productStore.loading">
+      <div class="table-container">
+        <el-table :data="productStore.products" style="width: 100%" row-class-name="product-row">
+          <el-table-column label="商品预览" width="100">
+            <template #default="{ row }">
+              <el-image 
+                :src="row.images?.[0]" 
+                class="product-thumb"
+                :preview-src-list="row.images"
+                preview-teleported
+                fit="cover"
+              >
+                <template #error>
+                  <div class="image-placeholder"><el-icon><Picture /></el-icon></div>
+                </template>
+              </el-image>
+            </template>
+          </el-table-column>
+          <el-table-column prop="title" label="商品标题" min-width="240">
+            <template #default="{ row }">
+              <div class="title-cell">
+                <span class="product-title">{{ row.title }}</span>
+                <span class="product-id">ID: {{ row._id.substring(0, 8) }}</span>
+              </div>
+            </template>
+          </el-table-column>
+          <el-table-column prop="categoryId.name" label="分类" width="140">
+            <template #default="{ row }">
+              <el-tag effect="light" class="category-tag">{{ row.categoryId?.name || '未分类' }}</el-tag>
+            </template>
+          </el-table-column>
+          <el-table-column prop="status" label="上架状态" width="120">
+            <template #default="{ row }">
+              <div class="status-indicator" :class="row.status === 1 ? 'active' : 'inactive'">
+                <div class="dot"></div>
+                <span>{{ row.status === 1 ? '上架中' : '已下架' }}</span>
+              </div>
+            </template>
+          </el-table-column>
+          <el-table-column label="管理操作" width="160" fixed="right">
+            <template #default="{ row }">
+              <div class="action-btns">
+                <el-tooltip content="编辑商品" placement="top">
+                  <el-button circle class="edit-btn" :icon="Edit" @click="handleEdit(row)" />
+                </el-tooltip>
+                <el-tooltip content="更多设置" placement="top">
+                  <el-button circle class="more-btn" :icon="Setting" />
+                </el-tooltip>
+                <el-tooltip content="删除商品" placement="top">
+                  <el-button circle class="del-btn" :icon="Delete" @click="handleDelete(row)" />
+                </el-tooltip>
+              </div>
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
 
-      <div class="pagination">
+      <div class="pagination-box">
         <el-pagination
           v-model:current-page="queryParams.page"
           :page-size="queryParams.limit"
-          layout="total, prev, pager, next"
+          layout="total, prev, pager, next, jumper"
           :total="productStore.total"
           @current-change="handlePageChange"
         />
@@ -257,7 +296,7 @@ import {
   type UploadProps,
   type UploadUserFile,
 } from 'element-plus';
-import { Delete, Plus, Upload, UploadFilled, Download } from '@element-plus/icons-vue';
+import { Delete, Plus, Upload, UploadFilled, Download, Picture, Edit, Setting } from '@element-plus/icons-vue';
 import { useAuthStore } from '@/store/auth';
 import axios from 'axios';
 
@@ -566,94 +605,179 @@ const handleSubmit = async () => {
 
 <style scoped lang="scss">
 .product-container {
-  .card-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  .pagination {
-    margin-top: 20px;
-    display: flex;
-    justify-content: flex-end;
-  }
-  .specs-section {
-    padding: 20px;
-    background: #fcfcfc;
-    border: 1px solid #ebeef5;
-    border-radius: 8px;
-    margin-bottom: 24px;
+  padding: 4px;
+}
 
-    .section-header {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 20px;
-      .tip {
-        font-size: 12px;
-        color: #909399;
-      }
-    }
-
-    .spec-item {
-      margin-bottom: 16px;
-      padding: 16px;
+.product-page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 24px;
+  padding: 0 4px;
+  
+  .page-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: #1e293b;
+    margin: 0 0 4px;
+  }
+  
+  .page-subtitle {
+    color: #64748b;
+    font-size: 14px;
+    margin: 0;
+  }
+  
+  .header-actions-group {
+    display: flex;
+    gap: 12px;
+    
+    .action-btn {
       background: #fff;
-      border: 1px solid #f0f0f0;
-      border-radius: 6px;
-      transition: all 0.3s;
-      
-      &:hover {
-        box-shadow: 0 2px 12px 0 rgba(0,0,0,0.05);
-      }
-
-      .spec-row {
-        display: flex;
-        align-items: flex-start;
-        gap: 16px;
-      }
-
-      .values-wrapper {
-        flex: 1;
-        display: flex;
-        flex-wrap: wrap;
-        gap: 8px;
-        align-items: center;
-        
-        .value-input {
-          width: 120px;
-        }
-      }
+      border: 1px solid #e2e8f0;
+      font-weight: 600;
+      color: #475569;
     }
   }
+}
 
-  .sku-section {
-    margin-top: 24px;
+.product-list-card {
+  padding: 10px;
+  border-radius: 20px !important;
+  border: 1px solid #e2e8f0 !important;
+  
+  :deep(.el-card__body) {
+    padding: 0;
+  }
+}
+
+.product-thumb {
+  width: 56px;
+  height: 56px;
+  border-radius: 12px;
+  border: 1px solid #f1f5f9;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.image-placeholder {
+  width: 100%;
+  height: 100%;
+  background: #f8fafc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #cbd5e1;
+  font-size: 20px;
+}
+
+.title-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  
+  .product-title {
+    font-weight: 600;
+    color: #1e293b;
+    font-size: 14px;
+  }
+  
+  .product-id {
+    font-size: 11px;
+    color: #94a3b8;
+    font-family: monospace;
+  }
+}
+
+.category-tag {
+  border: none;
+  background: #f1f5f9;
+  color: #475569;
+  font-weight: 600;
+  border-radius: 6px;
+}
+
+.status-indicator {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  
+  .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+  }
+  
+  &.active {
+    color: #16a34a;
+    .dot { background: #22c55e; box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.15); }
+  }
+  
+  &.inactive {
+    color: #94a3b8;
+    .dot { background: #cbd5e1; }
+  }
+}
+
+.action-btns {
+  display: flex;
+  gap: 8px;
+  
+  .el-button {
+    border-color: #f1f5f9;
+    background: #fff;
+    color: #64748b;
+    transition: all 0.2s;
     
-    .batch-settings {
-      background: #f0f9eb;
-      padding: 12px 16px;
-      border-radius: 6px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 16px;
-      font-size: 13px;
-      color: #606266;
-    }
-    
-    .sku-table {
-      border-radius: 4px;
-      overflow: hidden;
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
     }
   }
+  
+  .edit-btn:hover { color: #6366f1; border-color: #6366f1; }
+  .more-btn:hover { color: #22c55e; border-color: #22c55e; }
+  .del-btn:hover { color: #ef4444; border-color: #ef4444; }
+}
 
-  .mb-10 { margin-bottom: 10px; }
-  .ml-10 { margin-left: 10px; }
-  .mr-5 { margin-right: 5px; }
-  .mt-20 { margin-top: 20px; }
-  .header-btns {
-    display: flex;
-    gap: 10px;
+.pagination-box {
+  padding: 24px;
+  display: flex;
+  justify-content: flex-end;
+  border-top: 1px solid #f1f5f9;
+}
+
+.specs-section {
+  background: #f8fafc;
+  padding: 24px;
+  border-radius: 16px;
+  border: 1px dashed #e2e8f0;
+}
+
+.spec-item {
+  background: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  margin-bottom: 16px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.sku-table-area {
+  margin-top: 24px;
+  
+  .batch-edit-card {
+    background: #f1f5f9;
+    padding: 24px;
+    border-radius: 16px;
+    margin-bottom: 24px;
+    
+    .batch-title {
+      font-weight: 700;
+      color: #1e293b;
+      margin-right: 20px;
+    }
   }
 }
 </style>
