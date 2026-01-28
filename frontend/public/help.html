@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stellar Admin - 帮助文档</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-sub: #64748b;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: var(--bg-color);
+            margin: 0;
+            color: var(--text-main);
+            overflow-x: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+            padding: 60px 20px;
+            text-align: center;
+            color: white;
+            clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%);
+            position: relative;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            margin: 0 0 10px;
+            animation: slideDown 0.8s ease-out;
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin: 0;
+            animation: fadeIn 1s ease-out 0.3s backwards;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: -60px auto 40px;
+            padding: 0 20px;
+            display: grid;
+            gap: 24px;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            position: relative;
+            z-index: 10;
+        }
+
+        .doc-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid #e2e8f0;
+            animation: slideUp 0.6s ease-out backwards;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .doc-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--primary);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .doc-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        .doc-card:hover::before {
+            opacity: 1;
+        }
+
+        .icon-box {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            background: rgba(99, 102, 241, 0.1);
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin: 0 0 10px;
+            color: var(--text-main);
+        }
+
+        .card-desc {
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: var(--text-sub);
+        }
+
+        .feature-list {
+            margin-top: 20px;
+            padding: 0;
+            list-style: none;
+        }
+
+        .feature-list li {
+            position: relative;
+            padding-left: 20px;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+            color: var(--text-sub);
+        }
+
+        .feature-list li::before {
+            content: '•';
+            color: var(--primary);
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+        }
+
+        /* Float Animations */
+        @keyframes slideDown {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(50px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* Staggered Delay */
+        .doc-card:nth-child(1) {
+            animation-delay: 0.1s;
+        }
+
+        .doc-card:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .doc-card:nth-child(3) {
+            animation-delay: 0.3s;
+        }
+
+        .doc-card:nth-child(4) {
+            animation-delay: 0.4s;
+        }
+
+        .doc-card:nth-child(5) {
+            animation-delay: 0.5s;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="header">
+        <h1>使用指南</h1>
+        <p>Stellar Admin 管理系统功能全览</p>
+    </div>
+
+    <div class="container">
+        <!-- 仪表盘 -->
+        <div class="doc-card">
+            <div class="icon-box">📊</div>
+            <h3 class="card-title">仪表盘 (Dashboard)</h3>
+            <p class="card-desc">系统的指挥中心，提供核心数据的实时概览。</p>
+            <ul class="feature-list">
+                <li>查看早安问候与系统状态</li>
+                <li>核心指标统计（商品数、SKU数、库存预警）</li>
+                <li>快捷入口：一键直达常用功能</li>
+                <li>平台公告：掌握最新系统升级动态</li>
+            </ul>
+        </div>
+
+        <!-- 商品管理 -->
+        <div class="doc-card">
+            <div class="icon-box">📦</div>
+            <h3 class="card-title">商品管理 (Product)</h3>
+            <p class="card-desc">全流程商品生命周期管理，支持高效录入与维护。</p>
+            <ul class="feature-list">
+                <li>商品列表：支持搜索、筛选、分页</li>
+                <li>创建/编辑：富文本描述、多图上传、规格定义</li>
+                <li>状态控制：一键上下架商品</li>
+                <li>批量操作：Excel 导入导出支持</li>
+            </ul>
+        </div>
+
+        <!-- 分类管理 -->
+        <div class="doc-card">
+            <div class="icon-box">🌲</div>
+            <h3 class="card-title">分类管理 (Category)</h3>
+            <p class="card-desc">构建灵活的商品层级结构，无限级树形分类。</p>
+            <ul class="feature-list">
+                <li>树形视图：直观展示父子关系</li>
+                <li>拖拽排序：任意调整分类顺序</li>
+                <li>快速映射：将商品挂载至指定类目</li>
+            </ul>
+        </div>
+
+        <!-- SKU 管理 -->
+        <div class="doc-card">
+            <div class="icon-box">🏷️</div>
+            <h3 class="card-title">SKU 管理 (SKU)</h3>
+            <p class="card-desc">精细化的单品管理，精确控制每一款规格。</p>
+            <ul class="feature-list">
+                <li>规格组合：颜色/尺寸等多维属性管理</li>
+                <li>价格策略：为不同规格设定差异化价格</li>
+                <li>唯一编码：SKU Code 快速检索</li>
+            </ul>
+        </div>
+
+        <!-- 库存系统 -->
+        <div class="doc-card">
+            <div class="icon-box">🏭</div>
+            <h3 class="card-title">库存对账 (Stock)</h3>
+            <p class="card-desc">精准的进销存追踪，确保账实相符。</p>
+            <ul class="feature-list">
+                <li>实时库存：高亮显示低库存预警</li>
+                <li>入库/出库：快捷录入库存变动</li>
+                <li>流水日志：全量记录每一次库存调度操作</li>
+            </ul>
+        </div>
+    </div>
+
+</body>
+
+</html>

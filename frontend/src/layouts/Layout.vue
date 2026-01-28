@@ -48,7 +48,7 @@
         <div class="sidebar-footer" v-if="!isCollapse">
           <div class="footer-card">
             <p>需协助？</p>
-            <el-button size="small" type="primary" link>查看文档</el-button>
+            <el-button size="small" type="primary" link @click="openDocs">查看文档</el-button>
           </div>
         </div>
       </div>
@@ -156,6 +156,10 @@ const handleCommand = (command: string) => {
 const checkSize = () => {
   isMobile.value = window.innerWidth < 768;
   if (isMobile.value) isCollapse.value = true;
+};
+
+const openDocs = () => {
+  window.open('/help.html', '_blank');
 };
 
 onMounted(() => {
