@@ -35,23 +35,42 @@ export class CategoryService {
       .lean()
       .exec();
 
-    return this.buildTree(categories);
-  }
-
-  private buildTree(categories: any[], parentId: string | null = null) {
+    const map = new Map();
     const tree = [];
-    for (const category of categories) {
-      const categoryParentId = category.parentId ? category.parentId.toString() : null;
-      const targetParentId = parentId ? parentId.toString() : null;
 
-      if (categoryParentId === targetParentId) {
-        const children = this.buildTree(categories, category._id);
-        if (children.length > 0) {
-          category.children = children;
+    // 第一遍遍历：建立 ID 映射，并过滤掉空 children（保持 lean 对象的纯净）
+    categories.forEach((cat) => {
+      map.set(cat._id.toString(), { ...cat, children: [] });
+    });
+
+    // 第二遍遍历：构建树形结构
+    categories.forEach((cat) => {
+      const node = map.get(cat._id.toString());
+      if (cat.parentId) {
+        const parentId = cat.parentId.toString();
+        const parent = map.get(parentId);
+        if (parent) {
+          parent.children.push(node);
+        } else {
+          tree.push(node);
         }
-        tree.push(category);
+      } else {
+        tree.push(node);
       }
-    }
+    });
+
+    // 递归清理空的 children 数组，保持输出整洁
+    const cleanEmptyChildren = (nodes: any[]) => {
+      nodes.forEach((node) => {
+        if (node.children && node.children.length === 0) {
+          delete node.children;
+        } else if (node.children) {
+          cleanEmptyChildren(node.children);
+        }
+      });
+    };
+    cleanEmptyChildren(tree);
+
     return tree;
   }
 

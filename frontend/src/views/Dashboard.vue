@@ -30,7 +30,7 @@
         <el-card class="welcome-banner" shadow="never">
           <div class="banner-content">
             <div class="text-group">
-              <h1 class="welcome-title">早安, {{ authStore.user?.username || '管理员' }}! ✨</h1>
+              <h1 class="welcome-title">{{ timeGreeting }}, {{ displayName }}! ✨</h1>
               <p class="welcome-desc">欢迎回到 Stellar Admin。今天平台运行一切正常，有 3 条新的库存提醒需要您关注。</p>
               <div class="banner-actions">
                 <el-button type="primary" size="large" @click="$router.push('/product')">发布新商品</el-button>
@@ -101,6 +101,8 @@
 import { computed, onMounted } from 'vue';
 import { useDashboardStore } from '@/store/dashboard';
 import { useAuthStore } from '@/store/auth';
+import { useCategoryStore } from '@/store/category';
+import { useProductStore } from '@/store/product';
 import { 
   Goods, Menu, Box, Warning, Management, 
   CaretTop, CaretBottom, ShoppingCart, List, 
@@ -109,6 +111,8 @@ import {
 
 const dashboardStore = useDashboardStore();
 const authStore = useAuthStore();
+const categoryStore = useCategoryStore();
+const productStore = useProductStore();
 
 const statsConfig = computed(() => [
   { label: '商品总数', value: dashboardStore.stats.productCount, icon: Goods, type: 'primary', trend: 12 },
@@ -116,6 +120,23 @@ const statsConfig = computed(() => [
   { label: 'SKU 总数', value: dashboardStore.stats.skuCount, icon: Box, type: 'info', trend: -2 },
   { label: '库存预警', value: dashboardStore.stats.lowStockCount, icon: Warning, type: 'danger', trend: 8 },
 ]);
+
+// 根据当前时间动态生成问候语
+const timeGreeting = computed(() => {
+  const hour = new Date().getHours();
+  if (hour >= 5 && hour < 11) return '早上好';
+  if (hour >= 11 && hour < 13) return '中午好';
+  if (hour >= 13 && hour < 18) return '下午好';
+  if (hour >= 18 && hour < 22) return '晚上好';
+  return '深夜好';
+});
+
+// 显示名称：如果是 admin 用户，显示 wzh
+const displayName = computed(() => {
+  const username = authStore.user?.username;
+  if (username === 'admin') return 'wzh';
+  return username || '管理员';
+});
 
 const shortcuts = [
   { label: '发布商品', icon: ShoppingCart, path: '/product', color: 'rgba(99, 102, 241, 0.1)' },
@@ -126,6 +147,10 @@ const shortcuts = [
 
 onMounted(() => {
   dashboardStore.fetchOverview();
+  
+  // 核心优化：预加载高频数据，实现点击“秒开”的效果
+  categoryStore.fetchCategoryTree();
+  productStore.fetchProducts({ page: 1, limit: 10 });
 });
 </script>
 

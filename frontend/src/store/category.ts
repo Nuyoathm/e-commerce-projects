@@ -16,7 +16,18 @@ export const useCategoryStore = defineStore('category', () => {
   const categories = ref<Category[]>([]);
   const loading = ref(false);
 
-  const fetchCategoryTree = async () => {
+  const fetchCategoryTree = async (force = false) => {
+    if (loading.value) return;
+
+    // 性能优化：如果有数据且不是强制执行，则不显示全屏 loading，直接后台更新
+    const hasData = categories.value.length > 0;
+    if (hasData && !force) {
+      request.get('/categories/tree').then((res) => {
+        categories.value = res as any;
+      });
+      return;
+    }
+
     loading.value = true;
     try {
       const response = await request.get('/categories/tree');

@@ -58,7 +58,7 @@ export class ProductService {
   }
 
   async findOne(id: string) {
-    const product = await this.productModel.findById(id).exec();
+    const product = await this.productModel.findById(id).populate('categoryId', 'name').exec();
     if (!product) throw new NotFoundException('Product not found');
     const skus = await this.skuModel.find({ productId: id }).exec();
     return { ...product.toObject(), skus };
